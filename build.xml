@@ -1,0 +1,50 @@
+<project name="bgfinancas" basedir="." default="main">
+
+    <property name="dir.src" value="src"/>
+    <property name="dir.build" value="build"/>
+    <property name="dir.lib" value="lib"/>
+    <property name="dir.jar" value="jar"/>
+
+    <path id="classpath">
+        <fileset dir="${dir.lib}" includes="**/*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.jar}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${dir.build}"/>
+        <javac target="1.6" source="1.6" srcdir="${dir.src}" destdir="${dir.build}" classpathref="classpath" includeantruntime="true"/>
+	<copy todir="${dir.build}">
+            <fileset dir="${dir.src}" excludes="**/*.java"/>
+        </copy>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="${dir.jar}"/>
+	<copy todir="${dir.jar}/lib">
+            <fileset dir="${dir.lib}"/>
+        </copy>
+        <jar destfile="${dir.jar}/bgfinancas.jar" basedir="${dir.build}">
+            <manifest>
+                <attribute name="Main-Class" value="Principal.TelaPrincipal"/>
+                <attribute name="SplashScreen-Image" value="splash.gif"/>
+                <attribute name="Class-Path" value="lib/commons-collections3.jar lib/commons-digester.jar lib/commons-logging.jar lib/hsqldb.jar lib/itext.jar lib/jasperreports.jar lib/jcommon.jar lib/jfreechart.jar lib/laf-plugin.jar lib/laf-widget.jar lib/poi.jar lib/substance.jar"/>
+	    </manifest>
+        </jar>
+    </target>
+
+    <target name="run">
+        <java fork="true" classname="Principal.TelaPrincipal">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${dir.jar}/bgfinancas.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="main" depends="compile,jar"/>
+
+</project>
